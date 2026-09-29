@@ -1,0 +1,1 @@
+[{"inputs":[{"internalType":"uint256","name":"n","type":"uint256"}],"name":"burn","outputs":[{"internalType":"bytes32","name":"h","type":"bytes32"}],"stateMutability":"pure","type":"function"}]

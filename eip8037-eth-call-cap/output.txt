@@ -1,0 +1,106 @@
+client go: go1.26.7
+client go-ethereum module: v1.17.7-0.20260929081437-f8f9bc574459
+params.MaxTxGas = 16777216
+
+=== [osaka] Part A: eth_call via ethclient/simulated, RPCGasCap default (50000000) ===
+eth_config current: forkId=0x9bd14a56 activationTime=0 precompiles=18 next=null
+deployed Burner at 0x3A220f351252089D385b29beca14e27F204c296A, GasProbe at 0xdB7d6AB1f17c6b31909aE466702703dAEf9269Cf
+GasProbe eth_call (gas=50,000,000): GAS at first opcode = 49978998
+GasProbe eth_call (no gas field): GAS at first opcode = 49978998
+| target (Osaka work) | n | gas field | eth_call result | error | returned h |
+|---|---|---|---|---|---|
+| 10.0M | 83154 | gas=50,000,000 | ok | | 0xc75bb29f2e81eb08... |
+| 10.0M | 83154 | no gas field | ok | | 0xc75bb29f2e81eb08... |
+| 16.5M | 137320 | gas=50,000,000 | ok | | 0xeaea8fab37a902f8... |
+| 16.5M | 137320 | no gas field | ok | | 0xeaea8fab37a902f8... |
+| 17.0M | 141487 | gas=50,000,000 | ok | | 0x8d6fb4cb0a702c4f... |
+| 17.0M | 141487 | no gas field | ok | | 0x8d6fb4cb0a702c4f... |
+| 20.0M | 166487 | gas=50,000,000 | ok | | 0x27cd7c975af70eac... |
+| 20.0M | 166487 | no gas field | ok | | 0x27cd7c975af70eac... |
+| 40.0M | 333154 | gas=50,000,000 | ok | | 0x79a2800dee9ca417... |
+| 40.0M | 333154 | no gas field | ok | | 0x79a2800dee9ca417... |
+eth_simulateV1 10.0M (n=83154, gas=50,000,000): status=1 gasUsed=9999992
+eth_simulateV1 10.0M (n=83154, no gas field): status=1 gasUsed=9999992
+eth_simulateV1 16.5M (n=137320, gas=50,000,000): status=1 gasUsed=16499912
+eth_simulateV1 16.5M (n=137320, no gas field): status=1 gasUsed=16499912
+eth_simulateV1 17.0M (n=141487, gas=50,000,000): status=1 gasUsed=16999952
+eth_simulateV1 17.0M (n=141487, no gas field): status=1 gasUsed=16999952
+eth_simulateV1 20.0M (n=166487, gas=50,000,000): status=1 gasUsed=19999952
+eth_simulateV1 20.0M (n=166487, no gas field): status=1 gasUsed=19999952
+eth_simulateV1 40.0M (n=333154, gas=50,000,000): status=1 gasUsed=39999992
+eth_simulateV1 40.0M (n=333154, no gas field): status=1 gasUsed=39999992
+eth_estimateGas 10.0M (n=83154): 10080524
+eth_estimateGas 16.5M (n=137320): 16632031
+eth_estimateGas 17.0M (n=141487): error `gas required exceeds allowance (16777216)` (code -32000)
+eth_estimateGas 20.0M (n=166487): error `gas required exceeds allowance (16777216)` (code -32000)
+eth_estimateGas 40.0M (n=333154): error `gas required exceeds allowance (16777216)` (code -32000)
+
+=== [osaka] Part B: debug_traceCall on a node built like ethclient/simulated + tracers API ===
+eth_config current: forkId=0x9bd14a56 activationTime=0 precompiles=18 next=null
+calibration (debug_traceCall): gasUsed(n) = 21500 + 120*n (Osaka reference: 21500 + 120*n)
+structLogger GasProbe (gas=50,000,000): first op GAS pc=0 gas=49979000; returned GAS=49978998; total gasUsed=21015
+structLogger GasProbe (no gas field): first op GAS pc=0 gas=49979000; returned GAS=49978998; total gasUsed=21015
+| target (Osaka work) | n | gas field | structLogger first-op gas | structLogger gasUsed | failed | callTracer gas | callTracer gasUsed | callTracer error |
+|---|---|---|---|---|---|---|---|---|
+| 10.0M | 83154 | gas=50,000,000 | 49978772 | 9999992 | false | 50000000 | 9999992 |  |
+| 10.0M | 83154 | no gas field | 49978772 | 9999992 | false | 50000000 | 9999992 |  |
+| 16.5M | 137320 | gas=50,000,000 | 49978772 | 16499912 | false | 50000000 | 16499912 |  |
+| 16.5M | 137320 | no gas field | 49978772 | 16499912 | false | 50000000 | 16499912 |  |
+| 17.0M | 141487 | gas=50,000,000 | 49978772 | 16999952 | false | 50000000 | 16999952 |  |
+| 17.0M | 141487 | no gas field | 49978772 | 16999952 | false | 50000000 | 16999952 |  |
+| 20.0M | 166487 | gas=50,000,000 | 49978772 | 19999952 | false | 50000000 | 19999952 |  |
+| 20.0M | 166487 | no gas field | 49978772 | 19999952 | false | 50000000 | 19999952 |  |
+| 40.0M | 333154 | gas=50,000,000 | 49978772 | 39999992 | false | 50000000 | 39999992 |  |
+| 40.0M | 333154 | no gas field | 49978772 | 39999992 | false | 50000000 | 39999992 |  |
+
+=== [amsterdam] Part A: eth_call via ethclient/simulated, RPCGasCap default (50000000) ===
+eth_config current: forkId=0x2ed4abd3 activationTime=0 precompiles=18 next=null
+deployed Burner at 0x3A220f351252089D385b29beca14e27F204c296A, GasProbe at 0xdB7d6AB1f17c6b31909aE466702703dAEf9269Cf
+GasProbe eth_call (gas=50,000,000): GAS at first opcode = 16762214
+GasProbe eth_call (no gas field): GAS at first opcode = 16762214
+| target (Osaka work) | n | gas field | eth_call result | error | returned h |
+|---|---|---|---|---|---|
+| 10.0M | 83154 | gas=50,000,000 | ok | | 0xc75bb29f2e81eb08... |
+| 10.0M | 83154 | no gas field | ok | | 0xc75bb29f2e81eb08... |
+| 16.5M | 137320 | gas=50,000,000 | ok | | 0xeaea8fab37a902f8... |
+| 16.5M | 137320 | no gas field | ok | | 0xeaea8fab37a902f8... |
+| 17.0M | 141487 | gas=50,000,000 | FAIL | `out of gas` (code -32000) | |
+| 17.0M | 141487 | no gas field | FAIL | `out of gas` (code -32000) | |
+| 20.0M | 166487 | gas=50,000,000 | FAIL | `out of gas` (code -32000) | |
+| 20.0M | 166487 | no gas field | FAIL | `out of gas` (code -32000) | |
+| 40.0M | 333154 | gas=50,000,000 | FAIL | `out of gas` (code -32000) | |
+| 40.0M | 333154 | no gas field | FAIL | `out of gas` (code -32000) | |
+eth_simulateV1 10.0M (n=83154, gas=50,000,000): status=1 gasUsed=9993992
+eth_simulateV1 10.0M (n=83154, no gas field): status=1 gasUsed=9993992
+eth_simulateV1 16.5M (n=137320, gas=50,000,000): status=1 gasUsed=16493912
+eth_simulateV1 16.5M (n=137320, no gas field): status=1 gasUsed=16493912
+eth_simulateV1 17.0M (n=141487, gas=50,000,000): status=0 gasUsed=16777216 error `out of gas` (code -32015)
+eth_simulateV1 17.0M (n=141487, no gas field): status=0 gasUsed=16777216 error `out of gas (gas limit was capped by the RPC server's global gas cap)` (code -32015)
+eth_simulateV1 20.0M (n=166487, gas=50,000,000): status=0 gasUsed=16777216 error `out of gas` (code -32015)
+eth_simulateV1 20.0M (n=166487, no gas field): status=0 gasUsed=16777216 error `out of gas (gas limit was capped by the RPC server's global gas cap)` (code -32015)
+eth_simulateV1 40.0M (n=333154, gas=50,000,000): status=0 gasUsed=16777216 error `out of gas` (code -32015)
+eth_simulateV1 40.0M (n=333154, no gas field): status=0 gasUsed=16777216 error `out of gas (gas limit was capped by the RPC server's global gas cap)` (code -32015)
+eth_estimateGas 10.0M (n=83154): 10074477
+eth_estimateGas 16.5M (n=137320): 16625983
+eth_estimateGas 17.0M (n=141487): error `gas required exceeds allowance (50000000)` (code -32000)
+eth_estimateGas 20.0M (n=166487): error `gas required exceeds allowance (50000000)` (code -32000)
+eth_estimateGas 40.0M (n=333154): error `gas required exceeds allowance (50000000)` (code -32000)
+
+=== [amsterdam] Part B: debug_traceCall on a node built like ethclient/simulated + tracers API ===
+eth_config current: forkId=0x2ed4abd3 activationTime=0 precompiles=18 next=null
+calibration (debug_traceCall): gasUsed(n) = 15500 + 120*n (Osaka reference: 21500 + 120*n)
+structLogger GasProbe (gas=50,000,000): first op GAS pc=0 gas=16762216; returned GAS=16762214; total gasUsed=15015
+structLogger GasProbe (no gas field): first op GAS pc=0 gas=16762216; returned GAS=16762214; total gasUsed=15015
+| target (Osaka work) | n | gas field | structLogger first-op gas | structLogger gasUsed | failed | callTracer gas | callTracer gasUsed | callTracer error |
+|---|---|---|---|---|---|---|---|---|
+| 10.0M | 83154 | gas=50,000,000 | 16761988 | 9993992 | false | 50000000 | 9993992 |  |
+| 10.0M | 83154 | no gas field | 16761988 | 9993992 | false | 50000000 | 9993992 |  |
+| 16.5M | 137320 | gas=50,000,000 | 16761988 | 16493912 | false | 50000000 | 16493912 |  |
+| 16.5M | 137320 | no gas field | 16761988 | 16493912 | false | 50000000 | 16493912 |  |
+| 17.0M | 141487 | gas=50,000,000 | 16761988 | 16777216 | true | 50000000 | 16777216 | out of gas |
+| 17.0M | 141487 | no gas field | 16761988 | 16777216 | true | 50000000 | 16777216 | out of gas |
+| 20.0M | 166487 | gas=50,000,000 | 16761988 | 16777216 | true | 50000000 | 16777216 | out of gas |
+| 20.0M | 166487 | no gas field | 16761988 | 16777216 | true | 50000000 | 16777216 | out of gas |
+| 40.0M | 333154 | gas=50,000,000 | 16761988 | 16777216 | true | 50000000 | 16777216 | out of gas |
+| 40.0M | 333154 | no gas field | 16761988 | 16777216 | true | 50000000 | 16777216 | out of gas |
+
